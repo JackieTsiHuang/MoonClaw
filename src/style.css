@@ -113,6 +113,18 @@ a { color: var(--accent); }
 .pin.active .pin-dot { transform: scale(1.3); }
 .pin.active .pin-dot { background: #fff; }
 
+/* Solar-system labels: a small colored dot with an always-visible name */
+.body-pin .pin-dot {
+  width: 10px; height: 10px;
+  background: var(--pin-color, var(--accent));
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px var(--pin-color, var(--accent));
+}
+.body-pin .pin-label { left: 30px; opacity: 0.92; font-size: 12px; padding: 2px 8px; }
+.body-pin:hover .pin-label, .body-pin:focus-visible .pin-label { opacity: 1; border-color: var(--pin-color, var(--accent)); }
+.body-pin.no-label .pin-label { display: none; }
+.body-pin.no-label:hover .pin-label, .body-pin.no-label:focus-visible .pin-label { display: block; z-index: 1; }
+
 .pin-label {
   position: absolute;
   left: 34px;
@@ -153,6 +165,7 @@ a { color: var(--accent); }
 }
 .brand span { color: var(--accent); }
 .tagline { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
+.brand, .tagline, .credit { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.6); }
 
 .glass {
   background: var(--glass);
@@ -223,8 +236,8 @@ a { color: var(--accent); }
   grid-row: span 2;
   width: 10px; height: 10px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px rgba(255, 207, 110, 0.7);
+  background: var(--pin-color, var(--accent));
+  box-shadow: 0 0 8px var(--pin-color, rgba(255, 207, 110, 0.7));
 }
 .lm-name { font-weight: 600; font-size: 14px; }
 .lm-kind { color: var(--muted); font-size: 12px; }
@@ -257,6 +270,9 @@ a { color: var(--accent); }
   transition: background 0.15s;
 }
 .ctrl:hover { background: rgba(255, 255, 255, 0.16); }
+.ctrl:disabled { opacity: 0.4; cursor: default; }
+.ctrl[hidden] { display: none; }
+.label-short { display: none; }
 .ctrl[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); }
 .ctrl-wide { background: var(--accent); color: var(--accent-ink); font-weight: 700; padding: 0 16px 0 14px; }
 .ctrl-wide:hover { background: #ffe0a0; }
@@ -285,6 +301,35 @@ a { color: var(--accent); }
   transition: opacity 0.6s;
 }
 body.interacted .hint, body:not(.ready) .hint { opacity: 0; }
+
+/* ---------- Solar-system view ---------- */
+
+.scale-note {
+  position: absolute;
+  top: calc(20px + var(--safe-top));
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+.scale-note[hidden] { display: none; }
+.scale-note strong { color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; font-size: 12px; }
+
+.credit-solar { display: none; }
+body.solar .credit-solar { display: inline; }
+body.transitioning .hint { opacity: 0; }
+
+.info-note { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.info-note[hidden] { display: none; }
 
 /* ---------- Info card ---------- */
 
@@ -418,6 +463,15 @@ body.interacted .hint, body:not(.ready) .hint { opacity: 0; }
     bottom: calc(34px + var(--safe-bottom));
   }
   .hint { bottom: calc(96px + var(--safe-bottom)); font-size: 12px; }
+  .controls { gap: 6px; max-width: calc(100% - 16px); }
+  .ctrl { min-width: 44px; padding: 0 10px; }
+  .ctrl-wide { padding: 0 14px 0 12px; white-space: nowrap; }
+  .label-long { display: none; }
+  .label-short { display: inline; }
+  .scale-note { top: auto; bottom: calc(150px + var(--safe-bottom)); font-size: 12px; }
+  body.card-open .scale-note { display: none; }
+  .body-pin .pin-label { font-size: 11px; left: 26px; }
+  .credit { font-size: 10.5px; padding: 0 8px; }
   .info-card {
     top: auto;
     left: calc(12px + var(--safe-left));

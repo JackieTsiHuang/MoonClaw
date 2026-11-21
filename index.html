@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#05060a" />
-    <meta name="description" content="MoonClaw — explore an interactive 3D Moon built from NASA LRO imagery. Rotate, zoom, and visit famous landmarks like the Apollo 11 landing site and Tycho crater." />
+    <meta name="description" content="MoonClaw — explore an interactive 3D Moon built from NASA LRO imagery and LOLA elevation data, then pull back to tour the whole solar system." />
     <title>MoonClaw — Interactive 3D Moon</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href="/textures/moon_color_2k.jpg" as="image" />
+    <link rel="preload" href="/textures/moon_color_2k.jpg" as="image" crossorigin="anonymous" />
+    <link rel="preload" href="/textures/moon_normal_2k.jpg" as="image" crossorigin="anonymous" />
   </head>
   <body>
-    <a class="skip-link" href="#landmark-list">Skip to landmarks</a>
+    <a class="skip-link" href="#panel-toggle">Skip to places list</a>
 
     <main id="app" aria-labelledby="site-title">
       <div
@@ -41,8 +42,12 @@
 
       <header class="hud hud-top">
         <h1 id="site-title" class="brand">Moon<span>Claw</span></h1>
-        <p class="tagline">An interactive 3D Moon</p>
+        <p class="tagline" id="tagline">An interactive 3D Moon</p>
       </header>
+
+      <p id="scale-note" class="scale-note" hidden>
+        <strong>Not to scale</strong> · sizes and distances are compressed
+      </p>
 
       <nav class="panel" aria-labelledby="landmarks-heading">
         <button
@@ -56,6 +61,7 @@
           <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul id="landmark-list" class="landmark-list" tabindex="-1"></ul>
+        <ul id="body-list" class="landmark-list" tabindex="-1" hidden></ul>
       </nav>
 
       <div class="controls" role="toolbar" aria-label="View controls">
@@ -68,9 +74,16 @@
         <button id="auto-rotate" type="button" class="ctrl" aria-pressed="false" aria-label="Auto-rotate" title="Toggle auto-rotate (A)">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>
         </button>
-        <button id="reset-view" type="button" class="ctrl ctrl-wide" aria-label="Reset view" title="Reset view (R)">
+        <button id="reset-view" type="button" class="ctrl" aria-label="Reset view" title="Reset view (R)">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
-          <span>Reset view</span>
+        </button>
+        <button id="explore-solar" type="button" class="ctrl ctrl-wide" aria-label="Explore Solar System" title="Pull back to see the whole solar system (S)">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><circle cx="21" cy="10.6" r="1" fill="currentColor"/></svg>
+          <span class="label-long">Explore Solar System</span><span class="label-short" aria-hidden="true">Solar System</span>
+        </button>
+        <button id="return-moon" type="button" class="ctrl ctrl-wide" title="Fly back to the Moon (M)" hidden>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+          <span>Return to Moon</span>
         </button>
       </div>
 
@@ -84,7 +97,7 @@
         aria-labelledby="info-title"
         hidden
       >
-        <button id="info-close" type="button" class="info-close" aria-label="Close landmark info">
+        <button id="info-close" type="button" class="info-close" aria-label="Close info card">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
         <p class="info-kicker" id="info-kicker"></p>
@@ -92,6 +105,7 @@
         <p class="info-coords" id="info-coords"></p>
         <p id="info-body"></p>
         <dl class="info-facts" id="info-facts"></dl>
+        <p class="info-note" id="info-note" hidden>Shown not to scale.</p>
       </section>
 
       <div id="loader" class="loader" role="status" aria-live="polite">
@@ -102,7 +116,7 @@
       <p id="live" class="visually-hidden" aria-live="polite"></p>
 
       <footer class="credit">
-        Imagery: <a href="https://svs.gsfc.nasa.gov/4720" target="_blank" rel="noopener">NASA SVS CGI Moon Kit</a> (LRO/LROC &amp; LOLA)
+        Moon: <a href="https://svs.gsfc.nasa.gov/4720" target="_blank" rel="noopener">NASA SVS CGI Moon Kit</a> (LRO LROC &amp; LOLA)<span class="credit-solar"> · Planets: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a> (CC BY 4.0), Pluto: NASA/JHUAPL/SwRI</span>
       </footer>
     </main>
 
