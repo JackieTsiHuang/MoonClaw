@@ -131,7 +131,7 @@ export async function createViewer({
     for (let i = 0; i < count; i++) {
       const v = new THREE.Vector3().randomDirection().multiplyScalar(120 + Math.random() * 120);
       pos.set([v.x, v.y, v.z], i * 3);
-      c.setHSL(0.55 + Math.random() * 0.15, Math.random() * 0.4, 0.6 + Math.random() * 0.4);
+      c.setHSL(0.55 + Math.random() * 0.15, Math.random() * 0.4, (0.6 + Math.random() * 0.4) * 0.85);
       col.set([c.r, c.g, c.b], i * 3);
     }
     const g = new THREE.BufferGeometry();
@@ -139,7 +139,9 @@ export async function createViewer({
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     const p = new THREE.Points(
       g,
-      new THREE.PointsMaterial({ size: 1.6, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.85, depthWrite: false, depthTest: false }),
+      // Opaque + drawn first, without depth: a true background. Everything else (planets, the
+      // Moon) then paints over it. (As a *transparent* object it was drawn last, on top of planets.)
+      new THREE.PointsMaterial({ size: 1.6, sizeAttenuation: false, vertexColors: true, depthWrite: false, depthTest: false }),
     );
     p.renderOrder = -1;
     p.frustumCulled = false;
