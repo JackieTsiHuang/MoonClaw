@@ -51,6 +51,13 @@ export async function createViewer({
   camLight.target.position.set(0, 0, -4);
   const ambient = new THREE.AmbientLight(0x8090b0, 0.18);
   scene.add(ambient);
+  // Solar view: a dim, cool fill from the viewer's direction, so a planet's night side stays
+  // visible (and keeps its round shape) instead of vanishing into the black background.
+  const nightFill = new THREE.DirectionalLight(0x9fb4ff, 0);
+  nightFill.position.set(0.6, 0.8, 1);
+  camera.add(nightFill);
+  camera.add(nightFill.target);
+  nightFill.target.position.set(0, 0, -4);
 
   // ---------- Moon ----------
   const moonGroup = new THREE.Group();
@@ -388,7 +395,8 @@ export async function createViewer({
     const moonMix = 1 - smoothstep(6, 28, dMoon);
     camLight.intensity = 3.0 * moonMix;
     solar.sunLight.intensity = 3.2 * (1 - moonMix);
-    ambient.intensity = 0.18 * moonMix + 0.1 * (1 - moonMix);
+    ambient.intensity = 0.18 * moonMix + 0.45 * (1 - moonMix);
+    nightFill.intensity = 0.55 * (1 - moonMix);
 
     // Keep depth precision sensible across scales.
     const d = camera.position.distanceTo(controls.target);
